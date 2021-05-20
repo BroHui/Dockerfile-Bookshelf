@@ -1,0 +1,6 @@
+Django >=2.2.0, <2.3
+mysqlclient >= 2.0
+requests >= 2.11.1
+django-cors-headers >= 1.1.0
+redis >= 3.5.3
+uwsgi >= 2.0
