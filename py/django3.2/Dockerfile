@@ -11,11 +11,13 @@ RUN pip install -U pip \
 	&& pip wheel --no-cache-dir --wheel-dir=/wheels -r requirements.txt
 FROM python:3.7.9-slim-buster 
 ENV PYTHONUNBUFFERED 1
+WORKDIR /usr/src/app
 COPY --from=base /wheels /wheels
 COPY --from=base /usr/lib/x86_64-linux-gnu/libmariadb.so.3 /usr/lib/x86_64-linux-gnu/
 RUN pip install -U pip \
 	&& pip install -f /wheels -r /wheels/requirements.txt \
 	&& rm -rf /wheels \
 	&& rm -rf /root/.cache/pip/* \
-WORKDIR /data
+EXPOSE 8080 8081
 ENTRYPOINT ["uwsgi", "--ini"]
+CMD ["uwsgi.ini"]
