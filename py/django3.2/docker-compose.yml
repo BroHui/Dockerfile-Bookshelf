@@ -1,0 +1,10 @@
+version: '3'
+services:
+    proxysanta:
+        build: dockize/
+        image: YourProjectName
+        ports:
+            - "8081:8081"
+        volumes:
+            - ./src:/usr/src/app
+        container_name: YourProjectName
