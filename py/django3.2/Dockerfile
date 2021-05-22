@@ -19,5 +19,6 @@ RUN pip install -U pip \
 	&& rm -rf /wheels \
 	&& rm -rf /root/.cache/pip/* \
 EXPOSE 8080 8081
-ENTRYPOINT ["uwsgi", "--ini"]
-CMD ["uwsgi.ini"]
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["sh", "/docker-entrypoint.sh"]
+CMD ["uwsgi", "--ini", "uwsgi.ini"]
