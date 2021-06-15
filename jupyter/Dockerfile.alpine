@@ -13,6 +13,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     bzip2 \
     ca-certificates \
     curl \
+    libxml2-dev \
+    libxslt-dev \
     openssh-client \
     patch \
     python3-dev \
@@ -71,6 +73,13 @@ RUN apk --update-cache --allow-untrusted \
     chmod +w ./kernel.json  && \
     sed "s|gophernotes|/go/bin/gophernotes|" < kernel.json.in > kernel.json
 ENV GOPATH /go
+
+########################################################################
+# Plugins
+########################################################################
+RUN pip3 install --quiet --no-cache-dir jupyter_contrib_nbextensions jupyter_nbextensions_configurator && \
+    jupyter contrib nbextension install --system && \
+    jupyter nbextensions_configurator enable --system
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["jupyter", "notebook", "--allow-root", "--port=8888", "--ip='*'", "--NotebookApp.token=''", "--NotebookApp.password=''", "--no-browser", "--notebook-dir=/notebooks"]
