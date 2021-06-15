@@ -88,5 +88,14 @@ RUN pip3 install --no-cache-dir ipywidgets jupyter_contrib_nbextensions jupyter_
     jupyter nbextensions_configurator enable --user && \
     jupyter nbextension enable --py widgetsnbextension --user
 
+#########################################################################
+# NodeJS
+#########################################################################
+RUN apk --update-cache --allow-untrusted \
+        --repository http://dl-4.alpinelinux.org/alpine/edge/community \
+        --arch=x86_64 add nodejs npm && \
+    npm install -g --unsafe-perm ijavascript && \
+    ijsinstall --install=global
+
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["jupyter", "notebook", "--allow-root", "--port=8888", "--ip='*'", "--NotebookApp.token=''", "--NotebookApp.password=''", "--no-browser", "--notebook-dir=/notebooks"]
