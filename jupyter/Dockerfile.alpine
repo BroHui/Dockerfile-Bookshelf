@@ -75,11 +75,18 @@ RUN apk --update-cache --allow-untrusted \
 ENV GOPATH /go
 
 ########################################################################
+# Custom
+########################################################################
+RUN curl https://raw.githubusercontent.com/BroHui/Dockerfile-Bookshelf/main/jupyter/custom.css \
+    > /usr/lib/python3.7/site-packages/notebook/static/custom/custom.css
+
+########################################################################
 # Plugins
 ########################################################################
-RUN pip3 install --quiet --no-cache-dir jupyter_contrib_nbextensions jupyter_nbextensions_configurator && \
-    jupyter contrib nbextension install --system && \
-    jupyter nbextensions_configurator enable --system
+RUN pip3 install --no-cache-dir ipywidgets jupyter_contrib_nbextensions jupyter_nbextensions_configurator && \
+    jupyter contrib nbextension install --user && \
+    jupyter nbextensions_configurator enable --user && \
+    jupyter nbextension enable --py widgetsnbextension --user
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["jupyter", "notebook", "--allow-root", "--port=8888", "--ip='*'", "--NotebookApp.token=''", "--NotebookApp.password=''", "--no-browser", "--notebook-dir=/notebooks"]
