@@ -1,13 +1,15 @@
-修改Jupyter笔记本内容字体
+Jupyter
 
-```shell
-root@debian:~# docker cp jupyter:/home/jovyan/.jupyter/custom/custom.css .
-root@debian:~# docker cp custom.css jupyter:/home/jovyan/.jupyter/custom/custom.css
+Kernels:
+* Python3
+* Python2
+* Go
+* NodeJS
+
 ```
-增加
-```css
-#notebook-container * {
-    font-family: Jetbrains Mono, "微软雅黑";
-    font-size: 12px;
-}
+docker build -t jupyter:alpine -f Dockerfile.alpine .
+docker run -d --restart=always --name jupyter -p 8888:8888 -v $(pwd)/rundata:/notebooks jupyter:alpine
 ```
+
+
+![](https://github.com/BroHui/Dockerfile-Bookshelf/blob/main/jupyter/20210615231006.png)
