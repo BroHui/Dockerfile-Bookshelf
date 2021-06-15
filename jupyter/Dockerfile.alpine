@@ -1,0 +1,76 @@
+FROM alpine:3.10
+
+USER root
+
+########################################################################
+# Install Python3, Jupyter
+########################################################################
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk --update add \
+    bash \
+    build-base \
+    bzip2 \
+    ca-certificates \
+    curl \
+    openssh-client \
+    patch \
+    python3-dev \
+    libffi-dev \
+    openssl-dev \
+    py3-zmq \
+    readline-dev \
+    tar \
+    tini \
+    wget && \
+  rm -rf /var/cache/apk/* && \
+  pip3 install --no-cache-dir notebook && \
+  mkdir /notebooks
+
+
+########################################################################
+# Install python2 kernel
+########################################################################
+
+RUN apk --update add  \
+    py2-cffi \
+    py2-cparser \
+    py2-cryptography \
+    py2-dateutil \
+    py2-decorator \
+    py2-jinja2 \
+    py2-openssl \
+    py2-pip \
+    py2-ptyprocess \
+    py2-six \
+    py2-tornado \
+    py2-zmq \
+    python2 \
+    python2-dev && \
+    pip2 install --no-cache-dir --upgrade ipykernel && \
+    python2 -m ipykernel install --prefix=/usr/ --name python2 && \
+  echo "### Cleanup unneeded files" && \
+  rm -rf /usr/lib/python2*/*/tests && \
+  rm -rf /usr/lib/python2*/ensurepip && \
+  rm -rf /usr/lib/python2*/idlelib && \
+  rm -rf /usr/share/man/*
+
+
+########################################################################
+# Install Go
+########################################################################
+RUN apk --update-cache --allow-untrusted \
+        --repository http://dl-4.alpinelinux.org/alpine/edge/community \
+        --arch=x86_64 add go && \
+    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
+    echo "### Install gophernotes" && \
+    GOPATH=/go GO111MODULE=on go get github.com/gopherdata/gophernotes && \
+    mkdir -p ~/.local/share/jupyter/kernels/gophernotes && \
+    cd ~/.local/share/jupyter/kernels/gophernotes && \
+    cp /go/pkg/mod/github.com/gopherdata/gophernotes@v0.7.2/kernel/*  "." && \
+    chmod +w ./kernel.json  && \
+    sed "s|gophernotes|/go/bin/gophernotes|" < kernel.json.in > kernel.json
+ENV GOPATH /go
+
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["jupyter", "notebook", "--allow-root", "--port=8888", "--ip='*'", "--NotebookApp.token=''", "--NotebookApp.password=''", "--no-browser", "--notebook-dir=/notebooks"]
