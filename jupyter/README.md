@@ -1,13 +1,15 @@
-Jupyter (Size: 1.14GB)
+Jupyter  (Full image size: 1.14GB)
+
+Base on Alpine 3.10 (size: 5MB)
 
 Kernels:
-* Python3 (size: base, cannot remove! about 600MB)
-* Python2 (Size: about 200MB)
-* Go (Size: about 350MB)
-* NodeJS (size: about 50MB)
+* Python3 (size: base, cannot remove! about 380MB)
+* Python2 (Size: about 83MB)
+* Go (Size: about 476MB)
+* NodeJS (size: about 115MB)
 
 Features:
-* NBExtensions Support
+* NBExtensions Support (size: about 80MB)
 * cell edit font custom as Jetbrains Mono
 
 ```
