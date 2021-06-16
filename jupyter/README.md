@@ -1,10 +1,10 @@
-Jupyter
+Jupyter (Size: 1.14GB)
 
 Kernels:
-* Python3
-* Python2
-* Go
-* NodeJS
+* Python3 (size: base, cannot remove! about 600MB)
+* Python2 (Size: about 200MB)
+* Go (Size: about 350MB)
+* NodeJS (size: about 50MB)
 
 Features:
 * NBExtensions Support
