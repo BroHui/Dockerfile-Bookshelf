@@ -9,6 +9,7 @@ RUN apt-get update && \
 RUN pip install -U pip \
 	&& pip install --no-cache-dir wheel \
 	&& pip wheel --no-cache-dir --wheel-dir=/wheels -r requirements.txt
+    
 FROM python:2.7.18-slim-stretch
 ENV PYTHONUNBUFFERED 1
 COPY --from=base /wheels /wheels
@@ -19,5 +20,14 @@ RUN pip install -U pip \
 	&& rm -rf /root/.cache/pip/* \
 	&& ln -sf /usr/lib/x86_64-linux-gnu/libmariadbclient.so.18.0.0 /usr/lib/x86_64-linux-gnu/libmariadbclient.so.18
 WORKDIR /data
-ENV UWSGI_INI=""
-ENTRYPOINT ["sh", "-c", "uwsgi", "--ini", "$UWSGI_INI"]
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["sh", "/docker-entrypoint.sh"]
+CMD ["uwsgi", "--chdir", "/data", \
+    "--module", "demo.wsgi", \
+    "--master", \
+    "--processes", "5", \
+    "--http", "0.0.0.0:8000", \
+    "--vacuum", \
+	"--static-map", "/static=/usr/src/static", \
+	"--static-map", "/media=/usr/src/media" \
+	]
